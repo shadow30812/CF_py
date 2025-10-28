@@ -10,12 +10,14 @@ import math
 import sys
 
 # sys.setrecursionlimit(10**6)
+
 inf = math.inf
 eps = 1e-9
 mod = 10**9 + 7
 # mod = 998244353
+
 std_in, basic, search_sort, packages = 1, 1, 1, 1
-out_tog, dfs, hashing, rof, de = 0, 0, 0, 0, 1
+out_tog, dfs, hashing, rof, de = 0, 0, 0, 0, 0
 
 
 if True:
@@ -122,6 +124,55 @@ if True:
                     c += 1
             return c
 
+        PRIMES = [
+            2,
+            3,
+            5,
+            7,
+            11,
+            13,
+            17,
+            19,
+            23,
+            29,
+            31,
+            37,
+            41,
+            43,
+            47,
+            53,
+            59,
+            61,
+            67,
+            71,
+            73,
+            79,
+            83,
+            89,
+            97,
+            101,
+            103,
+            107,
+            109,
+            113,
+            127,
+            131,
+            137,
+            139,
+            149,
+            151,
+            157,
+            163,
+            167,
+            173,
+            179,
+            181,
+            191,
+            193,
+            197,
+            199,
+        ]
+
     if packages:
         import bisect as bs
         import os
@@ -160,8 +211,8 @@ if True:
 
     if search_sort:
 
-        def bin_search(arr, tg):
-            left, right = 0, len(arr) - 1
+        def bin_search(arr, tg, lo=0, hi: int | None = None):
+            left, right = lo, hi or len(arr) - 1
             while left <= right:
                 mid = left + (right - left) // 2
                 if arr[mid] == tg:
