@@ -30,6 +30,9 @@ if True:
         def printf(tbp: list[str]):
             sys.stdout.write("\n".join(tbp) + "\n")
 
+        def sprint(op: list[str]):
+            sys.stdout.write(" ".join(op) + "\n")
+
         def iprint(arr: list[int]):
             sys.stdout.write("\n".join(map(str, arr)) + "\n")
 
