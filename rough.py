@@ -2,8 +2,7 @@
 File: <<filename>>
 Author: <<author>>
 Affiliated to: <<company>>
-Created: <<filecreated('dddd MMMM Do YYYY HH:mm:ss')>>
-Last Modified: <<dateformat('dddd MMMM Do YYYY HH:mm:ss')>>
+Created: <<dateformat('dddd MMMM Do YYYY HH:mm:ss')>>
 """
 
 import math
@@ -17,14 +16,17 @@ mod = 10**9 + 7
 # mod = 998244353
 
 std_in, basic, search_sort, packages = 1, 1, 1, 1
-out_tog, dfs, hashing, rof, de = 0, 0, 0, 0, 0
+out_tog = 0
+graph = 0
+hashing = 0
+rof = 0
+de = 0
 
 
 if True:
     if std_in:
-
-        def input():
-            return sys.stdin.readline().rstrip()
+        _input = input  # Display prompt to stdout
+        input = lambda: sys.stdin.readline().rstrip()
 
         def intput():
             return sys.stdin.readline()
@@ -56,13 +58,6 @@ if True:
         def LFI():
             return list(map(float, input().split()))
 
-        # Graph 1-indexing -> list 0-idx
-        def GMI():
-            return map(lambda x: int(x) - 1, intput().split())
-
-        def LGMI():
-            return list(map(lambda x: int(x) - 1, intput().split()))
-
     if basic:
 
         def find(L: list, tg):
@@ -72,19 +67,22 @@ if True:
                 return -1
 
         def exp(x, n, m=None):
-            is_modular = m is not None
-            if is_modular:
+            modular = m is not None
+            if modular:
                 x %= m
             res = 1
-            while n > 0:
-                if n % 2 == 1:
+
+            while n:
+                if n % 2:
                     res = res * x
-                    if is_modular:
+                    if modular:
                         res %= m
+
                 x = x * x
-                if is_modular:
+                if modular:
                     x %= m
                 n //= 2
+
             return res
 
         def fmax(x, y):
@@ -110,8 +108,8 @@ if True:
 
         def allprime(n):
             prime = [True for _ in range(n + 1)]
-
             p = 2
+
             while p * p <= n:
                 if prime[p]:
                     for i in range(p * p, n + 1, p):
@@ -173,39 +171,103 @@ if True:
             199,
         ]
 
+        class PrefixSum:
+            def __init__(self, a, n):
+                self.a, self.n = a, n
+                self.arr = [0] * n
+                for i in range(1, n + 1):
+                    self.arr[i] = self.arr[i - 1] + a[i]
+
+            def ret(self):
+                return self.arr
+
+            def psum(self, i):
+                return self.arr[i]
+
+            def rsum(self, L, R):
+                return self.arr[R] if L == 0 else self.arr[R] - self.arr[L - 1]
+
+            def xsum(self, x):
+                cnt = {0: 1}
+                res = 0
+                for i in self.arr:
+                    tg = i - x
+                    if tg in cnt:
+                        res += cnt[tg]
+                    cnt[i] = cnt.get(i, 0) + 1
+                return res
+
+            def pxor(self):
+                p = [0] * self.n
+                for i in range(self.n):
+                    p[i] = p[i - 1] ^ self.a[i]
+                return p
+
+        class logix(PrefixSum):
+            def __init__(self):
+                self.a, self.n = super().a, super().n
+                self.p = p = [[0] * 30 for _ in range(self.n)]
+                for i in range(30):
+                    for j in range(1, super().n + 1):
+                        p[i][j] = p[i][j - 1] + ((self.a[j] >> i) & 1)
+
+            def AND(self, L, R):
+                res = 0
+                for i in range(30):
+                    if self.p[i][R] - self.p[i][L - 1] == R - L + 1:
+                        res += 1 << i
+                return res
+
+            def OR(self, L, R):
+                res = 0
+                for i in range(30):
+                    if self.p[i][R] - self.p[i][L - 1] > 0:
+                        res += 1 << i
+                return res
+
     if packages:
         import bisect as bs
+        import cmath
         import os
         import random
         from collections import Counter as ctr
         from collections import defaultdict as dd
         from collections import deque as dq
         from copy import deepcopy
-        from functools import cmp_to_key, lru_cache, reduce
-        from heapq import (
-            heapify as hpfy,
+        from functools import (
+            cmp_to_key,
+            lru_cache,
+            reduce,
         )
-        from heapq import (
-            heappop as hpop,
-        )
-        from heapq import (
-            heappush as hpsh,
-        )
+        from heapq import heapify as hpfy
+        from heapq import heappop as hpop
+        from heapq import heappush as hpsh
         from heapq import (
             heappushpop,
             merge,
             nlargest,
             nsmallest,
         )
-        from heapq import (
-            heapreplace as hrep,
-        )
+        from heapq import heapreplace as hrep
         from io import BytesIO, IOBase
-        from itertools import accumulate, combinations, count, permutations, product
+        from itertools import (
+            accumulate,
+            combinations,
+            count,
+            permutations,
+            product,
+        )
         from operator import itemgetter
         from string import ascii_letters as a_al
         from string import ascii_lowercase as a_lc
         from string import ascii_uppercase as a_uc
+
+        try:
+            from sortedcontainers import SortedDict as sd
+            from sortedcontainers import SortedList as sl
+            from sortedcontainers import SortedSet as ss
+        except ImportError:
+            pass
 
         BUFSIZE = 4096
 
@@ -234,15 +296,17 @@ if True:
             return left
 
         def csort(L):
-            if not L or len(L) == 1:
+            if len(L) < 2:
                 return L
+
             top = max(L)
             bot = min(L)
-            count = [0] * (top - bot + 1)
-            for num in L:
-                count[num - bot] += 1
             new = []
-            for n, c in enumerate(count):
+            ct = [0] * (top - bot + 1)
+
+            for num in L:
+                ct[num - bot] += 1
+            for n, c in enumerate(ct):
                 new.extend([n + bot] * c)
             return new
 
@@ -285,7 +349,92 @@ if True:
                 sz *= 2
             return L
 
+        def rbk(text, pattern):
+            """
+            Rabin-Karp algorithm with a rolling hash... O(N*M) worst case
+            """
+            N = len(text)
+            M = len(pattern)
+
+            if M > N:
+                return -1
+
+            MOD = 10**9 + 7
+            BASE = 256
+            H_POW = pow(BASE, M - 1, MOD)
+
+            hash_pattern = 0
+            hash_text = 0
+
+            for i in range(M):
+                hash_pattern = (hash_pattern * BASE + ord(pattern[i])) % MOD
+                hash_text = (hash_text * BASE + ord(text[i])) % MOD
+
+            for i in range(N - M + 1):
+                if hash_text == hash_pattern:
+                    if text[i : i + M] == pattern:
+                        return i
+
+                if i < N - M:
+                    hash_text = (hash_text - ord(text[i]) * H_POW) % MOD
+                    hash_text = (hash_text * BASE) % MOD
+                    hash_text = (hash_text + ord(text[i + M])) % MOD
+
+                    if hash_text < 0:
+                        hash_text += MOD
+
+            return -1
+
+        def kmp(text, pattern):
+            """
+            Knuth-Morris-Pratt algorithm with no backtracks... O(N + M) all case
+            """
+            N = len(text)
+            M = len(pattern)
+
+            if not M:
+                return 0
+            if M > N:
+                return -1
+
+            lps = [0] * M
+            hash_length = 0
+            i = 1
+
+            while i < M:
+                if pattern[i] == pattern[hash_length]:
+                    hash_length += 1
+                    lps[i] = hash_length
+                    i += 1
+                else:
+                    if hash_length:
+                        hash_length = lps[hash_length - 1]
+                    else:
+                        lps[i] = 0
+                        i += 1
+
+            i = 0
+            j = 0
+
+            while i < N:
+                if pattern[j] == text[i]:
+                    i += 1
+                    j += 1
+
+                if j == M:
+                    return i - j
+
+                elif i < N and pattern[j] != text[i]:
+                    if j:
+                        j = lps[j - 1]
+                    else:
+                        i += 1
+
+            return -1
+
     if out_tog:
+        import os
+        from io import BytesIO, IOBase
 
         class FastIO(IOBase):
             newlines = 0
@@ -306,7 +455,7 @@ if True:
                 self.newlines = 0
                 return self.buffer.read()
 
-            def readline(self):
+            def readline(self, size: int | None = -1):
                 while self.newlines == 0:
                     b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
                     self.newlines = b.count(b"\n") + (not b)
@@ -331,8 +480,15 @@ if True:
 
         sys.stdout = IOWrapper(sys.stdout)
 
-    if dfs:
+    if graph:
         from types import GeneratorType
+
+        # Graph 1-indexing -> list 0-idx
+        def GMI():
+            return map(lambda x: int(x) - 1, intput().split())
+
+        def LGMI():
+            return list(map(lambda x: int(x) - 1, intput().split()))
 
         def bootstrap(f, stk=[]):
             def wrappedfunc(*args, **kwargs):
@@ -353,7 +509,145 @@ if True:
 
             return wrappedfunc
 
+        class lst_lst:
+            def __init__(self, n):
+                self.n = n
+                self.pre = []
+                self.cur = []
+                self.notest = [-1] * (n + 1)
+
+            def append(self, i, j):
+                self.pre.append(self.notest[i])
+                self.notest[i] = len(self.cur)
+                self.cur.append(j)
+
+            def iterate(self, i):
+                tmp = self.notest[i]
+                while tmp != -1:
+                    yield self.cur[tmp]
+                    tmp = self.pre[tmp]
+
+        class FenwickTree:
+            def __init__(self, size_or_list):
+                if isinstance(size_or_list, int):
+                    self.n = size_or_list
+                    self.tree = [0] * (self.n + 1)
+                else:
+                    self.n = len(size_or_list)
+                    self.tree = [0] * (self.n + 1)
+                    for i in range(self.n):
+                        self._add(i + 1, size_or_list[i])
+
+            def _add(self, i, delta):
+                while i <= self.n:
+                    self.tree[i] += delta
+                    i += i & (-i)
+
+            def _query(self, i):
+                s = 0
+                while i > 0:
+                    s += self.tree[i]
+                    i -= i & (-i)
+                return s
+
+            def update(self, i, delta):
+                self._add(i + 1, delta)
+
+            def query(self, i):
+                return self._query(i + 1)
+
+            def range_query(self, l, r):
+                return self._query(r + 1) - self._query(l)
+
+        class SegmentTree:
+            def __init__(self, arr, merge_func, identity_val):
+                self.n = len(arr)
+                self.merge = merge_func
+                self.identity = identity_val
+                self.tree = [self.identity] * (2 * self.n)
+                for i in range(self.n):
+                    self.tree[self.n + i] = arr[i]
+                self._build()
+
+            def _build(self):
+                for i in range(self.n - 1, 0, -1):
+                    self.tree[i] = self.merge(self.tree[2 * i], self.tree[2 * i + 1])
+
+            def update(self, pos, new_val):
+                pos += self.n
+                self.tree[pos] = new_val
+                while pos > 1:
+                    if pos % 2 == 0:
+                        self.tree[pos // 2] = self.merge(
+                            self.tree[pos], self.tree[pos + 1]
+                        )
+                    else:
+                        self.tree[pos // 2] = self.merge(
+                            self.tree[pos - 1], self.tree[pos]
+                        )
+                    pos //= 2
+
+            def query(self, l, r):
+                res_left = self.identity
+                res_right = self.identity
+                l += self.n
+                r += self.n + 1
+                while l < r:
+                    if l % 2 == 1:
+                        res_left = self.merge(res_left, self.tree[l])
+                        l += 1
+                    if r % 2 == 1:
+                        r -= 1
+                        res_right = self.merge(self.tree[r], res_right)
+                    l //= 2
+                    r //= 2
+                return self.merge(res_left, res_right)
+
+        def bfs(graph, start_node, n):
+            from collections import deque
+
+            dist = [inf] * n
+            dist[start_node] = 0
+            q = deque([start_node])
+            while q:
+                u = q.popleft()
+                for v in graph[u]:
+                    if dist[v] == inf:
+                        dist[v] = dist[u] + 1
+                        q.append(v)
+            return dist
+
+        def dfs(graph, start_node, n):
+            visited = set()
+            stack = [start_node]
+            while stack:
+                u = stack.pop()
+                if u not in visited:
+                    visited.add(u)
+                    for v in reversed(graph[u]):
+                        if v not in visited:
+                            stack.append(v)
+            return visited
+
+        def dijkstra(graph, start_node, n):
+            import heapq
+
+            dist = {i: inf for i in range(n)}
+            dist[start_node] = 0
+            pq = [(0, start_node)]
+            while pq:
+                d, u = heapq.heappop(pq)
+                if d > dist[u]:
+                    continue
+                for v, weight in graph[u]:
+                    if dist[u] + weight < dist[v]:
+                        dist[v] = dist[u] + weight
+                        heapq.heappush(pq, (dist[v], v))
+            return dist
+
     if hashing:
+        import random
+
         RANDOM = random.getrandbits(20)
 
         class Wrapper(int):
@@ -366,7 +660,10 @@ if True:
     if rof:
         file = open("input.txt", "r").readline().strip()[1:-1]
         fin = open(file, "r")
-        input = lambda: fin.readline().strip()
+
+        def input():
+            return fin.readline().strip()
+
         output_file = open("output.txt", "w")
 
         def fprint(*args, **kwargs):
@@ -378,78 +675,6 @@ if True:
             print("\033[92m", end="")
             print(*args, **kwargs)
             print("\033[0m", end="")
-
-    class lst_lst:
-        def __init__(self, n):
-            self.n = n
-            self.pre = []
-            self.cur = []
-            self.notest = [-1] * (n + 1)
-
-        def append(self, i, j):
-            self.pre.append(self.notest[i])
-            self.notest[i] = len(self.cur)
-            self.cur.append(j)
-
-        def iterate(self, i):
-            tmp = self.notest[i]
-            while tmp != -1:
-                yield self.cur[tmp]
-                tmp = self.pre[tmp]
-
-    class PrefixSum:
-        def __init__(self, a, n):
-            self.a, self.n = a, n
-            self.arr = [0] * n
-            for i in a:
-                self.arr[i] = self.arr[i - 1] + a[i]
-
-        def ret(self):
-            return self.arr
-
-        def psum(self, i):
-            return self.arr[i]
-
-        def rsum(self, L, R):
-            return self.arr[R] if L == 0 else self.arr[R] - self.arr[L - 1]
-
-        def xsum(self, x):
-            cnt = {0: 1}
-            res = 0
-            for i in self.arr:
-                tg = i - x
-                if tg in cnt:
-                    res += cnt[tg]
-                cnt[i] = cnt.get(i, 0) + 1
-            return res
-
-        def pxor(self):
-            p = [0] * self.n
-            for i in range(self.n):
-                p[i] = p[i - 1] ^ self.a[i]
-            return p
-
-    class logix(PrefixSum):
-        def __init__(self):
-            self.a, self.n = super().a, super().n
-            self.p = p = [[0] * 30 for _ in range(self.n)]
-            for i in range(30):
-                for j in range(1, super().n + 1):
-                    p[i][j] = p[i][j - 1] + ((self.a[j] >> i) & 1)
-
-        def AND(self, L, R):
-            res = 0
-            for i in range(30):
-                if self.p[i][R] - self.p[i][L - 1] == R - L + 1:
-                    res += 1 << i
-            return res
-
-        def OR(self, L, R):
-            res = 0
-            for i in range(30):
-                if self.p[i][R] - self.p[i][L - 1] > 0:
-                    res += 1 << i
-            return res
 
 
 def solve():
