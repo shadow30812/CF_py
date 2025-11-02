@@ -2,3 +2,9 @@
 !.git*
 
 [A-Z].py
+[A-Z][0-9].py
+none.py
+ruffer.py
+
+*.cpp
+*.txt
