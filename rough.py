@@ -50,13 +50,20 @@ if True:
             return map(int, intput().split())
 
         def LI():
-            return input().split()
+            return list(input())
 
         def LII():
             return list(map(int, intput().split()))
 
         def LFI():
             return list(map(float, input().split()))
+
+        # Graph 1-indexing -> list 0-idx
+        def GMI():
+            return map(lambda x: int(x) - 1, intput().split())
+
+        def LGMI():
+            return list(map(lambda x: int(x) - 1, intput().split()))
 
     if basic:
 
@@ -542,13 +549,6 @@ if True:
 
     if graph:
         from types import GeneratorType
-
-        # Graph 1-indexing -> list 0-idx
-        def GMI():
-            return map(lambda x: int(x) - 1, intput().split())
-
-        def LGMI():
-            return list(map(lambda x: int(x) - 1, intput().split()))
 
         def bootstrap(f, stk=[]):
             def wrappedfunc(*args, **kwargs):
