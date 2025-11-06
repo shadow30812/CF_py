@@ -1,0 +1,21 @@
+{
+    "commands": {
+        "generator": "python generator.py",
+        "solution_a": "python my_solution.py",
+        "solution_b": "python brute_force.py"
+    },
+    "limits": {
+        "problem_time_s": 1,
+        "problem_mem_mb": 256,
+        "brute_force_time_s": 10,
+        "brute_force_mem_mb": 2048
+    },
+    "tester": {
+        "max_tests": 10000,
+        "num_cores": 0
+    },
+    "paths": {
+        "time_binary": "/usr/bin/time",
+        "failing_input_file": "failing_input.txt"
+    }
+}

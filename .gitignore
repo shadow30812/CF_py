@@ -1,10 +1,16 @@
 .*
 !.git*
 
+contest/
 [A-Z].py
 [A-Z][0-9].py
+
 none.py
 ruffer.py
-
+*.c
 *.cpp
 *.txt
+
+my_solution.py
+brute_force.py
+generator.py
