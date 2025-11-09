@@ -67,11 +67,12 @@ if True:
 
     if basic:
 
-        def find(L: list, tg):
-            try:
-                return L.index(tg)
-            except ValueError:
-                return -1
+        class Lrap(list):
+            def find(self, tg):
+                try:
+                    return self.index(tg)
+                except ValueError:
+                    return -1
 
         def exp(x, n, m=None):
             modular = m is not None
@@ -280,7 +281,7 @@ if True:
 
     if search_sort:
 
-        def bin_search(arr, tg, lo=0, hi: int | None = None):
+        def bin_search(arr, tg, lo=0, hi=None):
             left, right = lo, hi or len(arr) - 1
             while left <= right:
                 mid = left + (right - left) // 2
@@ -569,7 +570,7 @@ if True:
 
             return wrappedfunc
 
-        # # Faster to use lol or dd for C* fast implementation
+        # # Faster to use lol or dd for C* fast implementation for smaller lists
         # class lst_lst:
         #     def __init__(self, n):
         #         self.n = n
@@ -711,12 +712,12 @@ if True:
 
         RANDOM = random.getrandbits(20)
 
-        class W(int):
+        class Hrap(int):
             def __init__(self, x):
                 int.__init__(x)
 
             def __hash__(self):
-                return super(W, self).__hash__() ^ RANDOM
+                return super(Hrap, self).__hash__() ^ RANDOM
 
     if rof:
         file = open("input.txt", "r").readline().strip()[1:-1]
