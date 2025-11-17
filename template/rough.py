@@ -740,14 +740,20 @@ if True:
 
 
 def solve():
+    # global f, op
+
     pass
 
 
 def main():
     # solve()
 
-    for _ in range(II()):
-        solve()
+    if "II" in globals():
+        for _ in range(II()):
+            solve()
+    else:
+        for _ in range(int(input())):
+            solve()
 
     # res: list[str] = [solve() for _ in range(II())]
     # printf(res)
@@ -758,3 +764,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # with open("input.txt", "r") as f:
+    #     op = open("output.txt", "w")
+    #     if "II" in globals():
+    #         for _ in range(II()):
+    #             solve()
+    #     else:
+    #         for _ in range(int(input())):
+    #             solve()
